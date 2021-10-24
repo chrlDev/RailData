@@ -27,7 +27,7 @@ namespace RailData.Controllers
                     var typeOfIncident = Entities.TypeOfIncident.Create();
                     var incidentImage = Entities.IncidentImage.Create();
                     var gisLocation = Entities.GISPointOfInterest.Create();
-                    var maxIncidentId = ctx.Incident.Count();
+                    var maxIncidentId = ctx.Incident.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
                     typeOfReporter = ctx.TypeOfReporter.FirstOrDefault(c=>c.Id==request.Reporter.Id);
                     if (ctx.TypeOfReporter.Any(o => o.Id == typeOfReporter.Id && o.ValidFrom > DateTime.Now && o.ValidTo < DateTime.Now))
                     {
@@ -63,7 +63,7 @@ namespace RailData.Controllers
                     response.Id = inc.Id;
                     foreach (var point in request.GeolocationPoint)
                     {
-                        var maxgisLocationId = ctx.GISPointOfInterest.Count();
+                        var maxgisLocationId = ctx.GISPointOfInterest.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
                         gisLocation.Longitude = point.Logitude;
                         gisLocation.Latitude = point.Latitude;
                         gisLocation.IncidentId = inc.Id;
@@ -76,7 +76,7 @@ namespace RailData.Controllers
                     {
                         if (pic.ImageBytes.Length > 0)
                         {
-                            var maxImageId = ctx.IncidentImage.Count();
+                            var maxImageId = ctx.IncidentImage.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
                             incidentImage.DateInserted = DateTime.Now;
                             incidentImage.ImageName = pic.ImageName;
                             incidentImage.IncidentId = inc.Id;
@@ -116,7 +116,7 @@ namespace RailData.Controllers
                     incidentImage.DateInserted = DateTime.Now;
                     incidentImage.ImageName = request.ImageName;
                     var maxImageId = ctx.IncidentImage.Count();
-                    incidentImage.Id = maxImageId;
+                    incidentImage.Id = maxImageId;//ctx.IncidentImage.OrderByDescending(u => u.Id).FirstOrDefault().Id+1;
                     byte[] newBytes = Convert.FromBase64String(request.ImageBytes);
                     incidentImage.ImageByteArray = newBytes;
                     incidentImage.IncidentId = request.IncidentId;
