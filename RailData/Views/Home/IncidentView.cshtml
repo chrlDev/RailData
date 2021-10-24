@@ -1,0 +1,61 @@
+﻿@model RailData.Models.IncidentDetailView
+
+@{
+    ViewBag.Title = "IncidentView";
+}
+
+<h2>IncidentView</h2>
+
+<div>
+    <h4>Incident</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.inc.IncidentDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inc.IncidentDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.inc.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inc.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.inc.TypeOfIncident.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inc.TypeOfIncident.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.img.ImageName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.img.ImageName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.inc.TypeOfReporter.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inc.TypeOfReporter.Description)
+        </dd>
+        <dd>
+            <iframe src="@Url.Action("PostAndShow", new { id = Model.inc.Id })" width="400" height="300"></iframe>
+        </dd>
+    </dl>
+    
+</div>
+<p>
+    @Html.ActionLink("Download Image", "DownloadImage", new { id = Model.inc.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

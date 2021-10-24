@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="3c48c9eff2204ca39abb07c270d56fd1" Name="Diagram1">
+        <EntityTypeShape EntityType="RailDataModel.GISPointOfInterest" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.Incident" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.IncidentImage" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.spatial_ref_sys" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.TypeOfIncident" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.TypeOfReporter" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.layer" Width="1.5" PointX="5" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RailDataModel.topology" Width="1.5" PointX="2.75" PointY="5.25" IsExpanded="true" />
+        <AssociationConnector Association="RailDataModel.FK_1" ManuallyRouted="false" />
+        <AssociationConnector Association="RailDataModel.FK_11" ManuallyRouted="false" />
+        <AssociationConnector Association="RailDataModel.FK_2" ManuallyRouted="false" />
+        <AssociationConnector Association="RailDataModel.layer_topology_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="RailDataModel.FK_12" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

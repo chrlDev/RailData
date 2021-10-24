@@ -1,0 +1,56 @@
+﻿@model IEnumerable<RailData.Models.ListViewIncidentModel>
+
+@{
+    ViewBag.Title = "Incident List View";
+}
+
+<h2>Incident Live View</h2>
+
+<p>
+
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Incident.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Incident.IncidentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Incident.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Incident.TypeOfIncident.Description)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Incident.TypeOfReporter.Description)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Incident.Id)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Incident.IncidentDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Incident.Description)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Incident.TypeOfIncident.Description)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Incident.TypeOfReporter.Description)
+    </td>
+    <td>
+        @Html.ActionLink("Details", "IncidentView", new { id = item.Incident.Id })
+    </td>
+</tr>
+}
+
+</table>

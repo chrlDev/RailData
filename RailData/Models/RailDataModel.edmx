@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RailDataModel.Store" Provider="Npgsql" ProviderManifestToken="14.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GISPointOfInterest">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" Nullable="false" />
+          <Property Name="IncidentId" Type="int4" Nullable="false" />
+          <Property Name="Longitude" Type="float8" Nullable="false" />
+          <Property Name="Latitude" Type="float8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Incident">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" Nullable="false" />
+          <Property Name="IncidentDate" Type="date" Nullable="false" />
+          <Property Name="IncidentType" Type="int4" Nullable="false" />
+          <Property Name="ReporterId" Type="int4" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="8000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IncidentImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" Nullable="false" />
+          <Property Name="ImageByteArray" Type="bytea" Nullable="false" />
+          <Property Name="ImageName" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="DateInserted" Type="date" Nullable="false" />
+          <Property Name="IncidentId" Type="int4" />
+        </EntityType>
+        <EntityType Name="spatial_ref_sys">
+          <Key>
+            <PropertyRef Name="srid" />
+          </Key>
+          <Property Name="srid" Type="int4" Nullable="false" />
+          <Property Name="auth_name" Type="varchar" MaxLength="256" />
+          <Property Name="auth_srid" Type="int4" />
+          <Property Name="srtext" Type="varchar" MaxLength="2048" />
+          <Property Name="proj4text" Type="varchar" MaxLength="2048" />
+        </EntityType>
+        <EntityType Name="TypeOfIncident">
+          <Key>
+            <PropertyRef Name="incidentId" />
+          </Key>
+          <Property Name="incidentId" Type="int4" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ValidFrom" Type="date" Nullable="false" />
+          <Property Name="ValidTo" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TypeOfReporter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ValidFrom" Type="date" Nullable="false" />
+          <Property Name="ValidTo" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="layer">
+          <Key>
+            <PropertyRef Name="topology_id" />
+            <PropertyRef Name="layer_id" />
+          </Key>
+          <Property Name="topology_id" Type="int4" Nullable="false" />
+          <Property Name="layer_id" Type="int4" Nullable="false" />
+          <Property Name="schema_name" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="table_name" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="feature_column" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="feature_type" Type="int4" Nullable="false" />
+          <Property Name="level" Type="int4" Nullable="false" />
+          <Property Name="child_id" Type="int4" />
+        </EntityType>
+        <EntityType Name="topology">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="srid" Type="int4" Nullable="false" />
+          <Property Name="precision" Type="float8" Nullable="false" />
+          <Property Name="hasz" Type="bool" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_1">
+          <End Role="TypeOfIncident" Type="Self.TypeOfIncident" Multiplicity="1" />
+          <End Role="Incident" Type="Self.Incident" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfIncident">
+              <PropertyRef Name="incidentId" />
+            </Principal>
+            <Dependent Role="Incident">
+              <PropertyRef Name="IncidentType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_11">
+          <End Role="Incident" Type="Self.Incident" Multiplicity="1" />
+          <End Role="IncidentImage" Type="Self.IncidentImage" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Incident">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IncidentImage">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_12">
+          <End Role="Incident" Type="Self.Incident" Multiplicity="1" />
+          <End Role="GISPointOfInterest" Type="Self.GISPointOfInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Incident">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GISPointOfInterest">
+              <PropertyRef Name="IncidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_2">
+          <End Role="TypeOfReporter" Type="Self.TypeOfReporter" Multiplicity="1" />
+          <End Role="Incident" Type="Self.Incident" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfReporter">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Incident">
+              <PropertyRef Name="ReporterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="layer_topology_id_fkey">
+          <End Role="topology" Type="Self.topology" Multiplicity="1" />
+          <End Role="layer" Type="Self.layer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="topology">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="layer">
+              <PropertyRef Name="topology_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RailDataModelStoreContainer">
+          <EntitySet Name="GISPointOfInterest" EntityType="Self.GISPointOfInterest" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Incident" EntityType="Self.Incident" Schema="public" store:Type="Tables" />
+          <EntitySet Name="IncidentImage" EntityType="Self.IncidentImage" Schema="public" store:Type="Tables" />
+          <EntitySet Name="spatial_ref_sys" EntityType="Self.spatial_ref_sys" Schema="public" store:Type="Tables" />
+          <EntitySet Name="TypeOfIncident" EntityType="Self.TypeOfIncident" Schema="public" store:Type="Tables" />
+          <EntitySet Name="TypeOfReporter" EntityType="Self.TypeOfReporter" Schema="public" store:Type="Tables" />
+          <EntitySet Name="layer" EntityType="Self.layer" Schema="topology" store:Type="Tables" />
+          <EntitySet Name="topology" EntityType="Self.topology" Schema="topology" store:Type="Tables" />
+          <AssociationSet Name="FK_1" Association="Self.FK_1">
+            <End Role="TypeOfIncident" EntitySet="TypeOfIncident" />
+            <End Role="Incident" EntitySet="Incident" />
+          </AssociationSet>
+          <AssociationSet Name="FK_11" Association="Self.FK_11">
+            <End Role="Incident" EntitySet="Incident" />
+            <End Role="IncidentImage" EntitySet="IncidentImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_12" Association="Self.FK_12">
+            <End Role="Incident" EntitySet="Incident" />
+            <End Role="GISPointOfInterest" EntitySet="GISPointOfInterest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_2" Association="Self.FK_2">
+            <End Role="TypeOfReporter" EntitySet="TypeOfReporter" />
+            <End Role="Incident" EntitySet="Incident" />
+          </AssociationSet>
+          <AssociationSet Name="layer_topology_id_fkey" Association="Self.layer_topology_id_fkey">
+            <End Role="topology" EntitySet="topology" />
+            <End Role="layer" EntitySet="layer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RailDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="GISPointOfInterest">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IncidentId" Type="Int32" Nullable="false" />
+          <Property Name="Longitude" Type="Double" Nullable="false" />
+          <Property Name="Latitude" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Incident" Relationship="RailDataModel.FK_12" FromRole="GISPointOfInterest" ToRole="Incident" />
+        </EntityType>
+        <EntityType Name="Incident">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IncidentDate" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="IncidentType" Type="Int32" Nullable="false" />
+          <Property Name="ReporterId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="TypeOfIncident" Relationship="Self.FK_1" FromRole="Incident" ToRole="TypeOfIncident" />
+          <NavigationProperty Name="IncidentImage" Relationship="Self.FK_11" FromRole="Incident" ToRole="IncidentImage" />
+          <NavigationProperty Name="TypeOfReporter" Relationship="Self.FK_2" FromRole="Incident" ToRole="TypeOfReporter" />
+          <NavigationProperty Name="GISPointOfInterest" Relationship="RailDataModel.FK_12" FromRole="Incident" ToRole="GISPointOfInterest" />
+        </EntityType>
+        <EntityType Name="IncidentImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ImageByteArray" Type="Binary" MaxLength="2147483647" FixedLength="false" Nullable="false" />
+          <Property Name="ImageName" Type="String" MaxLength="8000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateInserted" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="IncidentId" Type="Int32" />
+          <NavigationProperty Name="Incident" Relationship="Self.FK_11" FromRole="IncidentImage" ToRole="Incident" />
+        </EntityType>
+        <EntityType Name="spatial_ref_sys">
+          <Key>
+            <PropertyRef Name="srid" />
+          </Key>
+          <Property Name="srid" Type="Int32" Nullable="false" />
+          <Property Name="auth_name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="auth_srid" Type="Int32" />
+          <Property Name="srtext" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="proj4text" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TypeOfIncident">
+          <Key>
+            <PropertyRef Name="incidentId" />
+          </Key>
+          <Property Name="incidentId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidFrom" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="ValidTo" Type="DateTime" Precision="0" Nullable="false" />
+          <NavigationProperty Name="Incident" Relationship="Self.FK_1" FromRole="TypeOfIncident" ToRole="Incident" />
+        </EntityType>
+        <EntityType Name="TypeOfReporter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidFrom" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="ValidTo" Type="DateTime" Precision="0" Nullable="false" />
+          <NavigationProperty Name="Incident" Relationship="Self.FK_2" FromRole="TypeOfReporter" ToRole="Incident" />
+        </EntityType>
+        <EntityType Name="layer">
+          <Key>
+            <PropertyRef Name="topology_id" />
+            <PropertyRef Name="layer_id" />
+          </Key>
+          <Property Name="topology_id" Type="Int32" Nullable="false" />
+          <Property Name="layer_id" Type="Int32" Nullable="false" />
+          <Property Name="schema_name" Type="String" MaxLength="8000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="table_name" Type="String" MaxLength="8000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="feature_column" Type="String" MaxLength="8000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="feature_type" Type="Int32" Nullable="false" />
+          <Property Name="level" Type="Int32" Nullable="false" />
+          <Property Name="child_id" Type="Int32" />
+          <NavigationProperty Name="topology" Relationship="Self.layer_topology_id_fkey" FromRole="layer" ToRole="topology" />
+        </EntityType>
+        <EntityType Name="topology">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="8000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="srid" Type="Int32" Nullable="false" />
+          <Property Name="precision" Type="Double" Nullable="false" />
+          <Property Name="hasz" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="layer" Relationship="Self.layer_topology_id_fkey" FromRole="topology" ToRole="layer" />
+        </EntityType>
+        <Association Name="FK_1">
+          <End Role="TypeOfIncident" Type="Self.TypeOfIncident" Multiplicity="1" />
+          <End Role="Incident" Type="Self.Incident" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfIncident">
+              <PropertyRef Name="incidentId" />
+            </Principal>
+            <Dependent Role="Incident">
+              <PropertyRef Name="IncidentType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_11">
+          <End Role="Incident" Type="Self.Incident" Multiplicity="1" />
+          <End Role="IncidentImage" Type="Self.IncidentImage" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Incident">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IncidentImage">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_2">
+          <End Role="TypeOfReporter" Type="Self.TypeOfReporter" Multiplicity="1" />
+          <End Role="Incident" Type="Self.Incident" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfReporter">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Incident">
+              <PropertyRef Name="ReporterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="layer_topology_id_fkey">
+          <End Role="topology" Type="Self.topology" Multiplicity="1" />
+          <End Role="layer" Type="Self.layer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="topology">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="layer">
+              <PropertyRef Name="topology_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RailDataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="GISPointOfInterest" EntityType="Self.GISPointOfInterest" />
+          <EntitySet Name="Incident" EntityType="Self.Incident" />
+          <EntitySet Name="IncidentImage" EntityType="Self.IncidentImage" />
+          <EntitySet Name="spatial_ref_sys" EntityType="Self.spatial_ref_sys" />
+          <EntitySet Name="TypeOfIncident" EntityType="Self.TypeOfIncident" />
+          <EntitySet Name="TypeOfReporter" EntityType="Self.TypeOfReporter" />
+          <EntitySet Name="layer" EntityType="Self.layer" />
+          <EntitySet Name="topology" EntityType="Self.topology" />
+          <AssociationSet Name="FK_1" Association="Self.FK_1">
+            <End Role="TypeOfIncident" EntitySet="TypeOfIncident" />
+            <End Role="Incident" EntitySet="Incident" />
+          </AssociationSet>
+          <AssociationSet Name="FK_11" Association="Self.FK_11">
+            <End Role="Incident" EntitySet="Incident" />
+            <End Role="IncidentImage" EntitySet="IncidentImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_2" Association="Self.FK_2">
+            <End Role="TypeOfReporter" EntitySet="TypeOfReporter" />
+            <End Role="Incident" EntitySet="Incident" />
+          </AssociationSet>
+          <AssociationSet Name="layer_topology_id_fkey" Association="Self.layer_topology_id_fkey">
+            <End Role="topology" EntitySet="topology" />
+            <End Role="layer" EntitySet="layer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_12" Association="RailDataModel.FK_12">
+            <End Role="Incident" EntitySet="Incident" />
+            <End Role="GISPointOfInterest" EntitySet="GISPointOfInterest" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_12">
+          <End Type="RailDataModel.Incident" Role="Incident" Multiplicity="1" />
+          <End Type="RailDataModel.GISPointOfInterest" Role="GISPointOfInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Incident">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GISPointOfInterest">
+              <PropertyRef Name="IncidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RailDataModelStoreContainer" CdmEntityContainer="RailDataEntities">
+          <EntitySetMapping Name="GISPointOfInterest">
+            <EntityTypeMapping TypeName="RailDataModel.GISPointOfInterest">
+              <MappingFragment StoreEntitySet="GISPointOfInterest">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IncidentId" ColumnName="IncidentId" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Incident">
+            <EntityTypeMapping TypeName="RailDataModel.Incident">
+              <MappingFragment StoreEntitySet="Incident">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IncidentDate" ColumnName="IncidentDate" />
+                <ScalarProperty Name="IncidentType" ColumnName="IncidentType" />
+                <ScalarProperty Name="ReporterId" ColumnName="ReporterId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IncidentImage">
+            <EntityTypeMapping TypeName="RailDataModel.IncidentImage">
+              <MappingFragment StoreEntitySet="IncidentImage">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ImageByteArray" ColumnName="ImageByteArray" />
+                <ScalarProperty Name="ImageName" ColumnName="ImageName" />
+                <ScalarProperty Name="DateInserted" ColumnName="DateInserted" />
+                <ScalarProperty Name="IncidentId" ColumnName="IncidentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="spatial_ref_sys">
+            <EntityTypeMapping TypeName="RailDataModel.spatial_ref_sys">
+              <MappingFragment StoreEntitySet="spatial_ref_sys">
+                <ScalarProperty Name="srid" ColumnName="srid" />
+                <ScalarProperty Name="auth_name" ColumnName="auth_name" />
+                <ScalarProperty Name="auth_srid" ColumnName="auth_srid" />
+                <ScalarProperty Name="srtext" ColumnName="srtext" />
+                <ScalarProperty Name="proj4text" ColumnName="proj4text" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeOfIncident">
+            <EntityTypeMapping TypeName="RailDataModel.TypeOfIncident">
+              <MappingFragment StoreEntitySet="TypeOfIncident">
+                <ScalarProperty Name="incidentId" ColumnName="incidentId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeOfReporter">
+            <EntityTypeMapping TypeName="RailDataModel.TypeOfReporter">
+              <MappingFragment StoreEntitySet="TypeOfReporter">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="layer">
+            <EntityTypeMapping TypeName="RailDataModel.layer">
+              <MappingFragment StoreEntitySet="layer">
+                <ScalarProperty Name="topology_id" ColumnName="topology_id" />
+                <ScalarProperty Name="layer_id" ColumnName="layer_id" />
+                <ScalarProperty Name="schema_name" ColumnName="schema_name" />
+                <ScalarProperty Name="table_name" ColumnName="table_name" />
+                <ScalarProperty Name="feature_column" ColumnName="feature_column" />
+                <ScalarProperty Name="feature_type" ColumnName="feature_type" />
+                <ScalarProperty Name="level" ColumnName="level" />
+                <ScalarProperty Name="child_id" ColumnName="child_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="topology">
+            <EntityTypeMapping TypeName="RailDataModel.topology">
+              <MappingFragment StoreEntitySet="topology">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="srid" ColumnName="srid" />
+                <ScalarProperty Name="precision" ColumnName="precision" />
+                <ScalarProperty Name="hasz" ColumnName="hasz" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
